@@ -1,0 +1,9 @@
+[package]
+
+name = "kong"
+version = "0.1.0"
+authors = ["Barosl Lee"]
+
+#[dependencies.iron]
+
+#git = "https://github.com/iron/iron.git"

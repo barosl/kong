@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>콩 수열 생성기</title>
+        <style>
+            * { font-family: 'Malgun Gothic', sans-serif; }
+            h1 { font-size: 20px; }
+            input { font-size: 30px; width: 200px; }
+            #out { font-size: 80px; }
+        </style>
+    </head>
+    <body>
+        <script>
+var sols = null;
+
+function load_sols() {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        sols = JSON.parse(xhr.responseText);
+
+        num_g.onkeyup();
+    };
+    xhr.open('GET', 'sols.json');
+    xhr.send();
+}
+
+load_sols();
+        </script>
+
+        <h1>콩수 생성기</h1>
+        <input type="number" id="num">
+        <div id="out"></div>
+
+        <script>
+var num_g = document.getElementById('num');
+var out_g = document.getElementById('out');
+
+function get_direct_sol(num) {
+    var sol = '?';
+
+    for (var i=0;i<=2;i++) {
+        if (sols[num - i]) {
+            var cur_sol = sols[num - i] + (i ? '+' + sols[i] : '');
+            console.log(num, cur_sol);
+            if (sol == '?' || sol.length > cur_sol.length) {
+                sol = cur_sol;
+            }
+        }
+    }
+
+    return sol;
+}
+
+function get_sol(num) {
+    if (num < 0) return '-' + '(' + get_sol(-num) + ')';
+    if (num == 1000) return get_direct_sol(num);
+
+    var res = get_direct_sol(num % 1000);
+    var remaining = parseInt(num / 1000);
+    if (remaining) res += '+' + '(' + get_sol(remaining) + ')' + '*' + '(' + get_direct_sol(1000) + ')';
+    return res;
+}
+
+function update_out(num) {
+    if (!sols) return;
+
+    out.innerHTML = num + ' = ' + get_sol(num);
+}
+
+num_g.onkeyup = function(ev) {
+    update_out(~~(this.value));
+};
+
+num_g.value = ~~(Math.random() * 1000);
+        </script>
+    </body>
+</html>
